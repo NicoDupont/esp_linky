@@ -1,0 +1,167 @@
+esphome:
+  name: esp-linky
+  platform: ESP8266
+  board: esp01_1m
+
+
+# Enable logging
+logger:
+  baud_rate: 0   # disable logging via UART, help to avoid numerous crash with ESP_LOGD
+  level: INFO   # INFO for less log, put DEBUG to view all the linky's "étiquettes" received  in the logs
+  esp8266_store_log_strings_in_flash: False     #  :doc:`recommanded for ESP8266 </components/sensor/custom>`
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "14191e980823725239bf24a1cd955ad7"
+
+wifi:
+  ssid: !secret wifi_orangebox_ssid
+  password: !secret wifi_orangebox_password
+  
+  power_save_mode: none
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp-Linky Hotspot"
+    password: !secret wifi_esp_ap_password
+
+captive_portal:
+
+uart:
+  id: uart_bus
+  rx_pin: GPIO3
+  tx_pin: GPIO1
+  baud_rate: 1200  #9600 si mode standard
+  parity: EVEN
+  data_bits: 7
+  
+teleinfo:
+  id: myteleinfo
+  update_interval: 60s  #délais de mise à jours des données
+  historical_mode: true #false si mode standard
+
+time:
+  - platform: homeassistant
+    timezone: "Europe/Paris"
+    id: ha_time
+
+binary_sensor:
+  - platform: status
+    name: "Esp Linky Status"
+
+text_sensor:
+  - platform: template
+    name: "Linky Uptime"
+    id: uptime_human
+    icon: mdi:clock-start
+    
+  - platform: wifi_info
+    ip_address:
+      name: "Esp Linky Local IP"
+
+  - platform: teleinfo
+    tag_name: "OPTARIF"
+    name: "Linky optarif"
+    teleinfo_id: myteleinfo
+
+button:
+  - platform: restart
+    name: "Esp Linky Restart"
+  - platform: shutdown
+    name: "Esp Linky Shutdown"
+  - platform: safe_mode
+    name: "Esp Linky Safe Mode"
+
+sensor:
+  - platform: wifi_signal
+    name: "Esp Linky WiFi Signal"
+    update_interval: 300s
+    
+ #Linky Heure Creuse
+  - platform: teleinfo
+    tag_name: "HCHC"
+    name: "Linky HC"
+    teleinfo_id: myteleinfo
+    state_class: "measurement"
+    device_class: "energy"
+    unit_of_measurement: "Wh"
+    
+ #Linky Heure Creuse KWh
+  - platform: teleinfo
+    tag_name: "HCHC"
+    name: "Linky HC kWh"
+    teleinfo_id: myteleinfo
+    state_class: "total_increasing"
+    device_class: "energy"
+    unit_of_measurement: "kWh"
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+  
+  #Linky Heure Pleine
+  - platform: teleinfo
+    tag_name: "HCHP"
+    name: "Linky HP"
+    teleinfo_id: myteleinfo
+    state_class: "measurement"
+    device_class: "energy"
+    unit_of_measurement: "Wh"
+    
+ #Linky Heure Creuse KWh
+  - platform: teleinfo
+    tag_name: "HCHP"
+    name: "Linky HP kWh"
+    teleinfo_id: myteleinfo
+    state_class: "total_increasing"
+    device_class: "energy"
+    unit_of_measurement: "kWh"
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+ 
+  #Linky Puissance apparente
+  - platform: teleinfo
+    tag_name: "PAPP"
+    name: "Linky Puissance Apparente"
+    unit_of_measurement: "VA"
+    icon: mdi:flash
+    teleinfo_id: myteleinfo
+    
+   #Linky Intensité
+  - platform: teleinfo
+    tag_name: "IINST"
+    name: "Linky Intensité"
+    unit_of_measurement: "A"
+    icon: mdi:flash
+    teleinfo_id: myteleinfo
+    
+   #Linky Intensité Maximum 
+  - platform: teleinfo
+    tag_name: "IMAX"
+    name: "Linky Intensité Max"
+    unit_of_measurement: "A"
+    icon: mdi:flash
+    teleinfo_id: myteleinfo    
+    
+  - platform: uptime
+    name: "Esp Linky Uptime"
+    id: uptime_sensor
+    update_interval: 120s
+    on_raw_value:
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            state: !lambda |-
+              int seconds = round(id(uptime_sensor).raw_state);
+              int days = seconds / (24 * 3600);
+              seconds = seconds % (24 * 3600);
+              int hours = seconds / 3600;
+              seconds = seconds % 3600;
+              int minutes = seconds /  60;
+              return (
+                (days ? to_string(days) + "d " : "") +
+                (hours ? to_string(hours) + "h " : "") +
+                (minutes ? to_string(minutes) + "m " : "")
+              ).c_str();
