@@ -50,9 +50,9 @@ Configurer le dashboard energy avec les sensors :
     sensor.linky_hc_kwh => avec son coût associé
     sensor.linky_hp_kwh => avec son coût associé
 
-![links]()
+![links](https://github.com/NicoDupont/esp_linky/blob/master/img/input_number_prix.png?raw=true)
 
-![links]()
+![links](https://github.com/NicoDupont/esp_linky/blob/master/img/dashboard_energy_1.png?raw=true)
 
 #### configuration.yaml :
 
@@ -177,9 +177,9 @@ yaml pour lovelace :
             func: max
 
 
-![links]()
+![links](https://github.com/NicoDupont/esp_linky/blob/master/img/dashboard_ha_1.png?raw=true)
 
-![links]()
+![links](https://github.com/NicoDupont/esp_linky/blob/master/img/dashboard_ha_2.png?raw=true)
 
 
 ### Sources, inspiration puis adaptation :
