@@ -20,6 +20,8 @@ Liste des composants :
 
 Shéma de cablage :
 
+Il faut relier le txd du pitinfo au rxd de l'esp8266  
+
 ![links](https://github.com/NicoDupont/esp_linky/blob/master/doc/esppit.png?raw=true)
 
 Réalisation :
