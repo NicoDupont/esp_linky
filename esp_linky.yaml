@@ -17,8 +17,11 @@ ota:
   password: "14191e980823725239bf24a1cd955ad7"
 
 wifi:
-  ssid: !secret wifi_orangebox_ssid
-  password: !secret wifi_orangebox_password
+  networks:
+  - ssid: !secret wifi_orangebox_ssid
+    password: !secret wifi_orangebox_password
+  - ssid: !secret wifi_maison_ssid
+    password: !secret wifi_maison_password
   
   power_save_mode: none
 
