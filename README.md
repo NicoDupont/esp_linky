@@ -30,17 +30,6 @@ Réalisation :
 
 ### HomeAssistant :
 
-#### Esphome :
-
-1. créer un nouveau noeud dans esphome.  
-2. le nommer 'esp_linky' ou comme vous le souhaitez... 
-3. copier le code du fichier esp_linky.yaml  
-4. Adapter le code pour votre wifi
-5. Vérifier si vous etes en mode historique ou basic et adapter le code si besoin.
-6. vérifier le code  
-7. télécharger le binaire et flasher votre esp8266 avec esphome flasher ou alors via le navigateur
-8. Ensuite tout se fera en OTA
-
 
 #### Dashboard Energy :
 

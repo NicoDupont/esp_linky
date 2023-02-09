@@ -2,6 +2,7 @@ esphome:
   name: esp-linky
   platform: ESP8266
   board: esp01_1m
+  comment: esp8266 esp01s téléinformation compteur enedis
 
 
 # Enable logging
@@ -22,6 +23,8 @@ wifi:
     password: !secret wifi_orangebox_password
   - ssid: !secret wifi_maison_ssid
     password: !secret wifi_maison_password
+  - ssid: !secret wifi_maison_2_ssid
+    password: !secret wifi_maison_2_password
   
   power_save_mode: none
 
@@ -42,7 +45,7 @@ uart:
   
 teleinfo:
   id: myteleinfo
-  update_interval: 60s  #délais de mise à jours des données
+  update_interval: 10s  #délais de mise à jours des données
   historical_mode: true #false si mode standard
 
 time:
@@ -63,11 +66,18 @@ text_sensor:
   - platform: wifi_info
     ip_address:
       name: "Esp Linky Local IP"
+    ssid:
+     name: "Esp Linky SSID"
 
   - platform: teleinfo
     tag_name: "OPTARIF"
     name: "Linky optarif"
     teleinfo_id: myteleinfo
+
+  - platform: teleinfo
+    tag_name: "PTEC"
+    name: "Linky Tarif en cours"
+    icon: mdi:currency-eur
 
 button:
   - platform: restart
@@ -140,13 +150,15 @@ sensor:
     icon: mdi:flash
     teleinfo_id: myteleinfo
     
-   #Linky Intensité Maximum 
+   #Linky Intensité Maximum Journée
   - platform: teleinfo
     tag_name: "IMAX"
     name: "Linky Intensité Max"
     unit_of_measurement: "A"
     icon: mdi:flash
-    teleinfo_id: myteleinfo    
+    teleinfo_id: myteleinfo  
+
+
     
   - platform: uptime
     name: "Esp Linky Uptime"
